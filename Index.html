@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia para usar la API de OpenAI</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5c667a;
+      --accent: #1f7a6d;
+      --accent-dark: #12574d;
+      --line: #dce3ef;
+      --code-bg: #111827;
+      --code-text: #e7eefc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: #172033;
+      color: #ffffff;
+      padding: 44px 20px;
+    }
+
+    .wrap {
+      width: min(1050px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    header p {
+      max-width: 760px;
+      margin: 0;
+      color: #d8e2f3;
+      font-size: 1.05rem;
+    }
+
+    nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    nav .wrap {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 12px 0;
+    }
+
+    nav a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      white-space: nowrap;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    main {
+      padding: 28px 0 48px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(23, 32, 51, 0.06);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.55rem;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 22px 0 8px;
+      font-size: 1.05rem;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+      margin: 8px 0 0;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    code {
+      background: #edf3f8;
+      color: #123a34;
+      padding: 2px 5px;
+      border-radius: 5px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.95em;
+    }
+
+    pre {
+      margin: 12px 0 18px;
+      padding: 16px;
+      overflow-x: auto;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 8px;
+      border: 1px solid #263449;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .note {
+      border-left: 5px solid var(--accent);
+      background: #eef8f6;
+      padding: 14px 16px;
+      border-radius: 8px;
+      color: #183b36;
+      margin-top: 12px;
+    }
+
+    .sources a {
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    footer {
+      color: var(--muted);
+      padding: 0 0 36px;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Uso de la API de OpenAI desde la terminal</h1>
+      <p>Guia practica para instalar la libreria, configurar la API Key, enviar prompts, recibir codigo como respuesta y automatizar tareas de programacion.</p>
+    </div>
+  </header>
+
+  <nav>
+    <div class="wrap">
+      <a href="#instalacion">Instalacion</a>
+      <a href="#api-key">API Key</a>
+      <a href="#terminal">Terminal</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#automatizacion">Automatizacion</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="instalacion">
+      <h2>1. Instalar la libreria de OpenAI</h2>
+      <p>OpenAI ofrece SDK oficiales para trabajar desde Node.js y Python. Antes de instalar, verifica que tengas el entorno correspondiente.</p>
+
+      <div class="grid">
+        <div>
+          <h3>Node.js</h3>
+          <pre><code>node -v
+npm -v
+npm install openai</code></pre>
+        </div>
+
+        <div>
+          <h3>Python</h3>
+          <pre><code>python --version
+pip install openai</code></pre>
+        </div>
+      </div>
+
+      <div class="note">
+        En Windows, si <code>python</code> no funciona, prueba con <code>py --version</code> y luego <code>py -m pip install openai</code>.
+      </div>
+    </section>
+
+    <section id="api-key">
+      <h2>2. Configurar la API Key en el sistema</h2>
+      <p>La API Key identifica tu cuenta y permite que los programas llamen a la API. No debe escribirse directamente dentro del codigo ni compartirse publicamente.</p>
+
+      <h3>Windows PowerShell, solo para la sesion actual</h3>
+      <pre><code>$env:OPENAI_API_KEY="tu_api_key_aqui"</code></pre>
+
+      <h3>Windows PowerShell, guardada para futuras sesiones</h3>
+      <pre><code>setx OPENAI_API_KEY "tu_api_key_aqui"</code></pre>
+
+      <h3>macOS o Linux</h3>
+      <pre><code>export OPENAI_API_KEY="tu_api_key_aqui"</code></pre>
+
+      <p>Despues de usar <code>setx</code>, abre una terminal nueva para que el cambio se cargue.</p>
+    </section>
+
+    <section id="terminal">
+      <h2>3. Ejecutar solicitudes desde la consola</h2>
+      <p>La forma mas simple es crear un archivo y ejecutarlo desde la terminal.</p>
+
+      <h3>Ejemplo con Node.js: archivo <code>example.mjs</code></h3>
+      <pre><code>import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const response = await client.responses.create({
+  model: "gpt-5.2",
+  input: "Explica en una frase que es una funcion en JavaScript."
+});
+
+console.log(response.output_text);</code></pre>
+
+      <p>Ejecutalo asi:</p>
+      <pre><code>node example.mjs</code></pre>
+
+      <h3>Ejemplo con Python: archivo <code>example.py</code></h3>
+      <pre><code>from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.2",
+    input="Explica en una frase que es una funcion en Python."
+)
+
+print(response.output_text)</code></pre>
+
+      <p>Ejecutalo asi:</p>
+      <pre><code>python example.py</code></pre>
+    </section>
+
+    <section id="prompts">
+      <h2>4. Enviar prompts y recibir codigo como respuesta</h2>
+      <p>Un prompt puede pedir explicaciones, codigo, pruebas o mejoras. Mientras mas claro sea el pedido, mas util sera la respuesta.</p>
+
+      <h3>Prompt para generar codigo</h3>
+      <pre><code>import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const prompt = `
+Crea una funcion en JavaScript llamada calcularPromedio.
+Debe recibir un arreglo de numeros y devolver el promedio.
+Incluye un ejemplo de uso.
+`;
+
+const response = await client.responses.create({
+  model: "gpt-5.2",
+  input: prompt
+});
+
+console.log(response.output_text);</code></pre>
+
+      <h3>Prompt mas especifico</h3>
+      <pre><code>Escribe codigo Python para leer un archivo CSV llamado ventas.csv.
+Calcula el total de la columna precio.
+Incluye manejo basico de errores y explica el resultado brevemente.</code></pre>
+    </section>
+
+    <section id="automatizacion">
+      <h2>5. Automatizar tareas de programacion desde la consola</h2>
+      <p>Tambien puedes crear scripts que reciban instrucciones desde la terminal y generen ayuda automaticamente.</p>
+
+      <h3>Script Node.js: <code>ask.mjs</code></h3>
+      <pre><code>import OpenAI from "openai";
+
+const client = new OpenAI();
+const prompt = process.argv.slice(2).join(" ");
+
+if (!prompt) {
+  console.error("Uso: node ask.mjs \"tu pregunta\"");
+  process.exit(1);
+}
+
+const response = await client.responses.create({
+  model: "gpt-5.2",
+  input: prompt
+});
+
+console.log(response.output_text);</code></pre>
+
+      <p>Uso desde la terminal:</p>
+      <pre><code>node ask.mjs "Crea una funcion JavaScript para validar un correo electronico"</code></pre>
+
+      <h3>Ideas de automatizacion</h3>
+      <ul>
+        <li>Generar funciones a partir de una descripcion.</li>
+        <li>Explicar errores copiados desde la consola.</li>
+        <li>Crear pruebas unitarias para una funcion existente.</li>
+        <li>Documentar codigo y sugerir mejoras.</li>
+        <li>Convertir codigo de un lenguaje a otro.</li>
+      </ul>
+    </section>
+
+    <section class="sources">
+      <h2>Fuentes oficiales</h2>
+      <p>Contenido basado en la documentacion oficial de OpenAI:</p>
+      <ul>
+        <li><a href="https://platform.openai.com/docs/quickstart" target="_blank" rel="noopener">OpenAI API Quickstart</a></li>
+        <li><a href="https://platform.openai.com/docs/api-reference/responses" target="_blank" rel="noopener">OpenAI Responses API Reference</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p>Recomendacion: guarda tus claves como variables de entorno y nunca las subas a GitHub.</p>
+  </footer>
+</body>
+</html>
